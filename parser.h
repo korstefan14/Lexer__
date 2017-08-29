@@ -22,9 +22,10 @@
 //
 // term -> factor frest
 //
-// factor -> 0 | 1 | ...  9
+// factor -> number
 //        | ( expr )
-//
+// number -> 0|1|2|...|9 //this is not reflected in the code
+//        | 0 number | 1 number | 2 number | ... | 9 number
 
 class Parser {
 public:
@@ -56,14 +57,14 @@ private:
         if ( token_.type == Lexer::Tokentype::Plus ) {
             match( Lexer::Tokentype::Plus );
             term();
-            std::cout << '+'; std::cout.flush();
+            std::cout << '+' << " "; std::cout.flush();
             rest();
 
         }
         else if ( token_.type == Lexer::Tokentype::Minus ) {
             match( Lexer::Tokentype::Minus );
             term();
-            std::cout << '-'; std::cout.flush();
+            std::cout << '-' << " "; std::cout.flush();
             rest();
         }
     }
@@ -73,14 +74,14 @@ private:
         if ( token_.type == Lexer::Tokentype::Multiply ) {
             match( Lexer::Tokentype::Multiply );
             factor();
-            std::cout << '*'; std::cout.flush();
+            std::cout << '*' << " "; std::cout.flush();
             frest();
 
         }
         else if ( token_.type == Lexer::Tokentype::Divide ) {
             match( Lexer::Tokentype::Divide );
             factor();
-            std::cout << '/'; std::cout.flush();
+            std::cout << '/' << " "; std::cout.flush();
             frest();
         }
     }
@@ -88,20 +89,20 @@ private:
     void factor() {
         if ( token_.type == Lexer::Tokentype::ParOpen ) {
             match(Lexer::Tokentype::ParOpen);
-            std::cout << '(';std::cout.flush();
+            std::cout << '(' << " ";std::cout.flush();
             expr();
 
 
         }
         if( token_.type == Lexer::Tokentype::ParClose){
             match(Lexer::Tokentype::ParClose);
-            std::cout << ')'; std::cout.flush();
+            std::cout << ')' << " "; std::cout.flush();
 
 
         }
         else {
             if ( token_.type == Lexer::Tokentype::Digit ) {
-                std::cout << token_.value; std::cout.flush();
+                std::cout << token_.value << " "; std::cout.flush();
             }
             match( Lexer::Tokentype::Digit );
         }

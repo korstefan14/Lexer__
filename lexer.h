@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string.h>
 
+
 class Lexer {
 public:
 
@@ -16,61 +17,67 @@ public:
 
     struct Token {
         Tokentype type;
-        char value;
+        std::string value;
 
     };
 
     Lexer(std::istream& is) : is_(is), lookahead_('\0'), eoi_(false) {
-        if ( !is_.get( lookahead_ ) ) {
-            eoi_ = true;
-        }
+        getNextCharWithEOI();
     }
 
     void next( Token& token ) {
 
         while ( !eoi_ && isspace( lookahead_ ) ) { // eliminate white spaces.
-            if ( !is_.get( lookahead_ ) ) {
-                eoi_ = true;
-            }
+            getNextCharWithEOI();
         }
-
+        token.value.clear();
         if ( eoi_ ) {
             token.type = Tokentype::EndOfInput;
             token.value = '\0';
         }
         else if (isdigit(lookahead_)) {
             token.type = Tokentype::Digit;
-            token.value = lookahead_;
+            token.value.push_back(lookahead_);
+            getNextCharWithEOI();
+            while (!eoi_ && isdigit(lookahead_)){
+                token.value.push_back(lookahead_);
+                getNextCharWithEOI();
+            }
         }
         else if (lookahead_ == '+') {
             token.type = Tokentype::Plus;
-            token.value = lookahead_;
+            token.value.push_back(lookahead_);
         }
         else if (lookahead_ == '-') {
             token.type = Tokentype::Minus;
-            token.value = lookahead_;
+            token.value.push_back(lookahead_);
         }
         else if (lookahead_ == '*') {
             token.type = Tokentype::Multiply;
-            token.value = lookahead_;
+            token.value.push_back(lookahead_);
         }
         else if (lookahead_ == '/') {
             token.type = Tokentype::Divide;
-            token.value = lookahead_;
+            token.value.push_back(lookahead_);
         }
         else if (lookahead_ == '(') {
             token.type = Tokentype::ParOpen;
-            token.value = lookahead_;
+            token.value.push_back(lookahead_);
         }
         else if (lookahead_ == ')') {
             token.type = Tokentype::ParClose;
-            token.value = lookahead_;
+            token.value.push_back(lookahead_);
         }
         else {
             token.type = Tokentype::Unknown;
-            token.value = lookahead_;
+            token.value.push_back(lookahead_);
         }
 
+        if (token.type != Tokentype::Digit){
+        getNextCharWithEOI();
+        }
+    }
+    void getNextCharWithEOI(){
         if ( !eoi_ && !is_.get( lookahead_ ) ) {
             eoi_ = true;
         }
